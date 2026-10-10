@@ -537,7 +537,7 @@ check(flatten(expand(render(sessionsState(), undefined))).length === 0, 'the clo
 // The drag handle is present, keyboard reachable, and drives a persisted offset.
 resetBrowser();
 const draggable = expand(render(sessionsState(), undefined));
-const head = findAll(draggable, 'aiw-head')[0];
+const head = findAll(draggable, 'aiw-bar')[0];
 check(head !== undefined, 'the card has no drag handle');
 check(typeof head?.props?.onPointerDown === 'function', 'the drag handle has no pointer handler');
 check(typeof head?.props?.onKeyDown === 'function', 'the drag handle is not keyboard draggable');
