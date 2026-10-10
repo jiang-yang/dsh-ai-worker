@@ -37,6 +37,9 @@
     "url": "git+https://github.com/jiang-yang/dsh-ai-worker.git"
   },
   "homepage": "https://github.com/jiang-yang/dsh-ai-worker",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
     "node": ">=20"
