@@ -38,9 +38,11 @@
   },
   "homepage": "https://github.com/jiang-yang/dsh-ai-worker",
   "engines": {
-    "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0"
+    "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
+    "node": ">=20"
   },
   "dsh": {
+    "manifestVersion": 1,
     "client": {
       "platform": "web",
       "inject": [
@@ -53,28 +55,6 @@
     },
     "bundle": {
       "patch": "./cordis.patch.yml"
-    },
-    "compatibility": {
-      "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0"
-    }
-  },
-  "dshhub": {
-    "schemaVersion": 1,
-    "displayName": "AI 打工人",
-    "summary": "DSH 界面右下角的像素风悬浮挂件：随会话状态切换摸鱼/思考/敲代码/等待确认/完成任务，纯 DOM+CSS 绘制，无网络请求。",
-    "categories": [
-      "Web UI",
-      "趣味"
-    ],
-    "surfaces": [
-      "web"
-    ],
-    "compatibility": {
-      "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
-      "node": ">=20"
-    },
-    "permissions": {
-      "network": []
     }
   },
   "peerDependencies": {

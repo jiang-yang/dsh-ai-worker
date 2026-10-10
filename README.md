@@ -75,8 +75,9 @@ bash uninstall.sh  # dsh plugin remove：从 profile 卸载（同样认 DSH_PROF
 | `cordis.patch.yml` | 包自带的 bundle 补丁：`- insert: - id: ai-worker, name: dsh-ai-worker` |
 | `package.json` → `dsh.bundle.patch` | 告诉 DSH：装这个包时自动应用上面那份补丁 |
 | `package.json` → `dsh.client` | 声明浏览器 bundle：`platform: web`，注入 layout / session，外部依赖 primitives |
-| `package.json` → `dshhub` | 插件市场元数据（显示名、简介、分类、surface、网络权限） |
-| `package.json` → `peerDependencies` | DSH 版本兼容区间，插件管理器据此校验 |
+| `package.json` → `dsh.manifestVersion` | manifest 格式版本，规范目前是 `1` |
+| `package.json` → `engines.dsh` / `engines.node` | 兼容的 DSH / Node 区间。规范把运行时要求放在**顶层 `engines`**（与 `engines.node` 并列），并把 DSH 兼容性定义成声明式字段；`dsh.engines` 是被明确否决过的位置 |
+| `package.json` → `peerDependencies` | 宿主提供的 UI 包；三个都标了 `optional`，解析不到也能跑 |
 
 `install.sh` 只是 DSH 官方 CLI 的一层包装：
 
@@ -92,5 +93,6 @@ dsh plugin --profile desktop add "$(pwd)"
 
 - 只挂在 DSH Web 界面；终端 TUI 没有这个插槽。
 - 「思考中 / 敲代码中」由会话活跃度推断：推理阶段没有工具事件，会话行会安静下来，因此用「running 且 2 秒内有无更新」来区分两者；宿主没有行时钟时退回本轮开始时间，都没有则视为刚开始。这是启发式，不是精确的模型状态。
+- 不再使用自造的 `dshhub` 块：显示名与简介由 README 和插件市场条目承载，宿主要求由 `engines.dsh` 承载——`dshhub` 不是 DSH manifest 规范字段，DSH 与插件市场都不读它。
 - 0.2.1 起改用宿主真正提供的 `useSessionStatus`：0.2.0 依赖的 `useSessionPendingInteraction` 与 `jobsBySession` 在当前 DSH 构建里并不存在，导致挂件此前永远停在「待命中」。
 - 折叠 / 关闭 / 位置按浏览器保存（localStorage），换浏览器或清缓存会重置。
