@@ -282,7 +282,8 @@ const CSS = `
 }
 .aiw-btn:hover{background:var(--dsw-alias-interactive-bg-hover,rgba(255,255,255,.08));color:var(--aiw-ink-strong)}
 .aiw-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#4c8dff);outline-offset:1px}
-.aiw-stage{display:flex;align-items:flex-end;justify-content:center;padding:10px 8px 8px;background:var(--aiw-accent-screen,transparent)}
+.aiw-stage{display:flex;align-items:flex-end;justify-content:center;padding:10px 8px 8px;background:var(--aiw-accent-screen,transparent);cursor:pointer}
+.aiw-stage:focus-visible{outline:2px solid var(--aiw-accent,#8b98a5);outline-offset:-2px}
 .aiw-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px 9px;font-size:10px;line-height:14px}
 .aiw-hint{color:var(--aiw-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .aiw-count{color:var(--aiw-ink-strong);font-variant-numeric:tabular-nums;flex:none;font-weight:600}
@@ -599,6 +600,22 @@ const AiWorkerWidget = named(function AiWorkerWidget(props) {
 		startedAt.current = running ? startedAt.current || Date.now() : 0;
 	}, [running]);
 
+	// One confetti burst, shared by the completion path and the manual
+	// trigger. The newest burst owns the timer, so asking for another one
+	// while particles are still falling restarts the hold instead of racing
+	// the previous timer.
+	const throwConfetti = React.useCallback(() => {
+		burstRef.current += 1;
+		const token = burstRef.current;
+		setPieces(makeConfetti(particleId));
+		window.clearTimeout(burstTimer.current);
+		burstTimer.current = window.setTimeout(() => {
+			if (burstRef.current !== token) return;
+			setCelebrating(false);
+			setPieces([]);
+		}, DONE_HOLD_MS);
+	}, []);
+
 	// A finished turn (running true → false) is one completed task: count it,
 	// celebrate it, and drop a confetti burst.
 	React.useEffect(() => {
@@ -610,16 +627,16 @@ const AiWorkerWidget = named(function AiWorkerWidget(props) {
 			writeDoneToday(next);
 			return next;
 		});
-		burstRef.current += 1;
-		const token = burstRef.current;
 		setCelebrating(true);
-		setPieces(makeConfetti(particleId));
-		burstTimer.current = window.setTimeout(() => {
-			if (burstRef.current !== token) return;
-			setCelebrating(false);
-			setPieces([]);
-		}, DONE_HOLD_MS);
-	}, [running]);
+		throwConfetti();
+	}, [running, throwConfetti]);
+
+	// Asking for another burst by hand is not a finished task: it never
+	// touches the counter, and it only extends the 完成任务 pose if that pose
+	// was already on screen.
+	const onCelebrate = React.useCallback(() => {
+		throwConfetti();
+	}, [throwConfetti]);
 
 	React.useEffect(() => () => window.clearTimeout(burstTimer.current), []);
 
@@ -762,11 +779,23 @@ const AiWorkerWidget = named(function AiWorkerWidget(props) {
 		}, '✕')
 	);
 
+	const stage = el('div', {
+		className: 'aiw-stage',
+		role: 'button',
+		tabIndex: 0,
+		title: t('celebrate', '点一下，再来个撒花'),
+		'aria-label': t('celebrate.aria', '撒花'),
+		onClick: onCelebrate,
+		onKeyDown: (event) => {
+			if (event.key !== 'Enter' && event.key !== ' ') return;
+			event.preventDefault();
+			onCelebrate();
+		}
+	}, el('div', { className: 'aiw-px' }, el(WorkerScene, { state, accent: palette.accent })));
+
 	const card = el('div', { className: 'aiw-card' },
 		head,
-		el('div', { className: 'aiw-stage' },
-			el('div', { className: 'aiw-px' }, el(WorkerScene, { state, accent: palette.accent }))
-		),
+		stage,
 		el('div', { className: 'aiw-foot' },
 			el('span', { className: 'aiw-hint', title: hintText }, hintText),
 			el('span', { className: 'aiw-count' }, countText)

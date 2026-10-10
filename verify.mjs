@@ -499,6 +499,38 @@ const afterHold = screen(sessionsState({ updatedAt: clock - 120000 }), statusSta
 check(afterHold.__state === 'slacking', `expected the widget to settle after celebrating, saw "${afterHold.__state}"`);
 check(!afterHold.includes('aiw-piece'), 'the confetti layer outlived its burst');
 
+// 再来个撒花: clicking the mascot (or pressing Enter on it) replays the burst
+// without counting a task. Fresh browser, so the counter starts empty.
+resetBrowser();
+render(sessionsState({ updatedAt: clock }), statusState());
+const idleTree = expand(render(sessionsState({ updatedAt: clock }), statusState()));
+const stage = findAll(idleTree, 'aiw-stage')[0];
+check(stage !== undefined, 'the card has no mascot stage to click');
+check(typeof stage?.props?.onClick === 'function', 'the mascot stage has no click handler');
+check((stage?.props?.tabIndex ?? -1) === 0, 'the mascot stage is not keyboard reachable');
+check(typeof stage?.props?.onKeyDown === 'function', 'the mascot stage ignores the keyboard');
+const beforeManual = localStorageMap.get('dsh.aiWorker.doneCount.v1');
+stage?.props?.onClick?.();
+const manualTree = screen(sessionsState({ updatedAt: clock }), statusState());
+check(manualTree.includes('aiw-piece'), 'clicking the mascot produced no confetti');
+check(manualTree.__state !== 'done', 'a manual burst must not claim a finished task');
+check(
+	timers.some((timer) => timer.at === clock + 7000),
+	'the manual burst did not schedule its own hold timer'
+);
+check(
+	localStorageMap.get('dsh.aiWorker.doneCount.v1') === beforeManual,
+	`a manual burst must not count a task (saw ${beforeManual} -> ${localStorageMap.get('dsh.aiWorker.doneCount.v1')})`
+);
+// The keyboard path works too, and the particles expire like any other burst.
+stage?.props?.onKeyDown?.({ key: 'Enter', preventDefault() {} });
+check(screen(sessionsState({ updatedAt: clock }), statusState()).includes('aiw-piece'), 'Enter on the mascot produced no confetti');
+tick(10000);
+check(
+	!screen(sessionsState({ updatedAt: clock }), statusState()).includes('aiw-piece'),
+	'the manual confetti outlived its burst'
+);
+
 check(screen(sessionsState(), undefined).length > 3, 'the widget rendered an empty tree while open');
 
 // ── interaction: collapse, close, and what survives a restart ──────────────
