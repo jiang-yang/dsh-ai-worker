@@ -32,6 +32,14 @@
     "widget"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiang-yang/dsh-ai-worker.git"
+  },
+  "homepage": "https://github.com/jiang-yang/dsh-ai-worker",
+  "engines": {
+    "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0"
+  },
   "dsh": {
     "client": {
       "platform": "web",
@@ -47,7 +55,7 @@
       "patch": "./cordis.patch.yml"
     },
     "compatibility": {
-      "dsh": ">=0.1.0-rc.6 <0.3.0-0"
+      "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0"
     }
   },
   "dshhub": {
@@ -62,7 +70,7 @@
       "web"
     ],
     "compatibility": {
-      "dsh": ">=0.1.0-rc.6 <0.3.0-0",
+      "dsh": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
       "node": ">=20"
     },
     "permissions": {
@@ -70,9 +78,9 @@
     }
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-client-ui-layout": ">=0.1.0-rc.6 <0.3.0-0",
-    "@deepseek-ai/dsh-client-ui-session": ">=0.1.0-rc.6 <0.3.0-0",
-    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0-rc.6 <0.3.0-0"
+    "@deepseek-ai/dsh-client-ui-layout": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
+    "@deepseek-ai/dsh-client-ui-session": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0-rc.6 <0.2.0-0 || >=0.2.0-rc.0 <0.3.0-0"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/dsh-client-ui-layout": {
