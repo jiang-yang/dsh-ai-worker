@@ -1,0 +1,88 @@
+{
+  "name": "dsh-ai-worker",
+  "version": "0.2.1",
+  "description": "DSH 界面右下角的像素风「AI 打工人」悬浮挂件：随当前会话状态切换「摸鱼中 / 思考中 / 敲代码中 / 等待确认 / 完成任务」，任务完成撒花并统计今日完成数。Pixel-art AI-worker widget for DeepSeek Harness: it reflects live session state (idle / thinking / coding / awaiting confirmation / done) and celebrates each completed task.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "build.mjs",
+    "verify.mjs",
+    "README.md",
+    "install.sh",
+    "uninstall.sh"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "web-ui",
+    "widget"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-session"
+      ],
+      "external": [
+        "@deepseek-ai/dsh-client-ui-primitives"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dsh": ">=0.1.0-rc.6 <0.3.0-0"
+    }
+  },
+  "dshhub": {
+    "schemaVersion": 1,
+    "displayName": "AI 打工人",
+    "summary": "DSH 界面右下角的像素风悬浮挂件：随会话状态切换摸鱼/思考/敲代码/等待确认/完成任务，纯 DOM+CSS 绘制，无网络请求。",
+    "categories": [
+      "Web UI",
+      "趣味"
+    ],
+    "surfaces": [
+      "web"
+    ],
+    "compatibility": {
+      "dsh": ">=0.1.0-rc.6 <0.3.0-0",
+      "node": ">=20"
+    },
+    "permissions": {
+      "network": []
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-client-ui-layout": ">=0.1.0-rc.6 <0.3.0-0",
+    "@deepseek-ai/dsh-client-ui-session": ">=0.1.0-rc.6 <0.3.0-0",
+    "@deepseek-ai/dsh-client-ui-primitives": ">=0.1.0-rc.6 <0.3.0-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-client-ui-layout": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-session": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-primitives": {
+      "optional": true
+    }
+  }
+}

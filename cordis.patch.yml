@@ -1,0 +1,8 @@
+# dsh-ai-worker bundle patch: one client row over the active profile.
+# The row name resolves from the profile's own node_modules, where
+# `dsh plugin --profile <profile> add <path>` installed this package,
+# so installing the plugin needs no manual cordis.patch.yml edit.
+
+- insert:
+    - id: ai-worker
+      name: dsh-ai-worker
